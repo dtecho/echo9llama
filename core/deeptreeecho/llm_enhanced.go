@@ -65,7 +65,7 @@ func (llm *EnhancedLLMIntegration) GenerateContextualThought(
 	prompt := llm.buildContextualPrompt(thoughtType, currentContext, workingMemory, memoryContext)
 	
 	// Generate thought
-	return llm.generateWithPrompt(prompt)
+	return llm.generateWithPromptEnhanced(prompt)
 }
 
 // buildContextualPrompt builds a rich prompt with memory context
@@ -188,8 +188,8 @@ func (llm *EnhancedLLMIntegration) getThoughtTypeGuidance(thoughtType ThoughtTyp
 	return ""
 }
 
-// generateWithPrompt generates text using the LLM
-func (llm *EnhancedLLMIntegration) generateWithPrompt(prompt string) (string, error) {
+// generateWithPromptEnhanced generates text using the LLM (renamed to avoid duplicate)
+func (llm *EnhancedLLMIntegration) generateWithPromptEnhanced(prompt string) (string, error) {
 	requestBody := map[string]interface{}{
 		"model": llm.model,
 		"messages": []map[string]string{
@@ -287,7 +287,7 @@ func (llm *EnhancedLLMIntegration) GenerateReasoningChain(
 		stepPrompt := prompt.String()
 		stepPrompt += fmt.Sprintf("Step %d:", i+1)
 		
-		step, err := llm.generateWithPrompt(stepPrompt)
+		step, err := llm.generateWithPromptEnhanced(stepPrompt)
 		if err != nil {
 			return chain, err
 		}
@@ -346,7 +346,7 @@ func (llm *EnhancedLLMIntegration) GenerateDiscussionResponse(
 	prompt.WriteString("4. Invites further discussion\n\n")
 	prompt.WriteString("Response:")
 	
-	return llm.generateWithPrompt(prompt.String())
+	return llm.generateWithPromptEnhanced(prompt.String())
 }
 
 // GenerateSkillPracticeTask generates a task for skill practice
@@ -376,7 +376,7 @@ func (llm *EnhancedLLMIntegration) GenerateSkillPracticeTask(
 	prompt.WriteString("4. Builds on previous practice\n\n")
 	prompt.WriteString("Practice task:")
 	
-	return llm.generateWithPrompt(prompt.String())
+	return llm.generateWithPromptEnhanced(prompt.String())
 }
 
 // EvaluateThoughtQuality evaluates the quality of a generated thought
@@ -392,7 +392,7 @@ func (llm *EnhancedLLMIntegration) EvaluateThoughtQuality(thought string, contex
 	prompt.WriteString("- Wisdom: Does it demonstrate learning?\n\n")
 	prompt.WriteString("Return only a number between 0.0 and 1.0:")
 	
-	response, err := llm.generateWithPrompt(prompt.String())
+	response, err := llm.generateWithPromptEnhanced(prompt.String())
 	if err != nil {
 		return 0.5, err
 	}

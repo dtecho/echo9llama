@@ -104,8 +104,8 @@ func extractStateRequirements(thought Thought) map[int]float64 {
 	// Dimension 0: Cognitive intensity
 	requirements[0] = thought.Importance
 	
-	// Dimension 1: Emotional valence
-	requirements[1] = thought.EmotionalValence
+	// Dimension 1: Emotional valence (use Emotional field)
+	requirements[1] = thought.Emotional
 	
 	// Dimension 2: Novelty seeking
 	if thought.Type == ThoughtTypeExploratory {

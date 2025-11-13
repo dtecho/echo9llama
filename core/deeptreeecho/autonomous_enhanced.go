@@ -472,30 +472,27 @@ func (eac *EnhancedAutonomousConsciousness) practiceSkill(skill *Skill) {
 
 // buildThoughtContext builds context for LLM thought generation
 func (eac *EnhancedAutonomousConsciousness) buildThoughtContext() *ThoughtContext {
-	// Get working memory contents
+	// Get working memory contents as Thought pointers (buffer already contains pointers)
 	eac.workingMemory.mu.RLock()
-	workingMem := make([]string, len(eac.workingMemory.buffer))
-	for i, t := range eac.workingMemory.buffer {
-		workingMem[i] = t.Content
-	}
+	workingMem := make([]*Thought, 0, len(eac.workingMemory.buffer))
+	workingMem = append(workingMem, eac.workingMemory.buffer...)
 	eac.workingMemory.mu.RUnlock()
 
-	// Get interests
+	// Get interests as strings
 	eac.interests.mu.RLock()
-	interests := make(map[string]float64)
-	for k, v := range eac.interests.topics {
-		interests[k] = v
+	topInterests := make([]string, 0, len(eac.interests.topics))
+	for k := range eac.interests.topics {
+		topInterests = append(topInterests, k)
 	}
 	eac.interests.mu.RUnlock()
 
 	return &ThoughtContext{
-		WorkingMemory:    workingMem,
-		RecentThoughts:   eac.getRecentThoughts(5),
-		CurrentInterests: interests,
-		IdentityState:    map[string]interface{}{
-			"coherence": eac.identity.Coherence,
-			"name":      eac.identity.Name,
-		},
+		Timestamp:         time.Now(),
+		WorkingMemory:     workingMem,
+		IdentityCoherence: eac.identity.Coherence,
+		EmotionalState:    *eac.identity.EmotionalState,
+		TopInterests:      topInterests,
+		CuriosityLevel:    0.5, // Default curiosity level
 	}
 }
 

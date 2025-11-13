@@ -60,8 +60,8 @@ type Usage struct {
 	TotalTokens      int `json:"total_tokens"`
 }
 
-// ThoughtContext provides context for thought generation
-type ThoughtContext struct {
+// LLMThoughtContext provides context for thought generation (renamed to avoid conflict)
+type LLMThoughtContext struct {
 	WorkingMemory    []string
 	RecentThoughts   []string
 	CurrentInterests map[string]float64

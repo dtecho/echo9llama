@@ -673,34 +673,25 @@ func (ac *AutonomousConsciousness) buildThoughtContext() *ThoughtContext {
 	ac.workingMemory.mu.RLock()
 	defer ac.workingMemory.mu.RUnlock()
 	
-	// Extract recent thoughts
-	recentThoughts := make([]string, 0)
-	for _, t := range ac.workingMemory.buffer {
-		recentThoughts = append(recentThoughts, t.Content)
-	}
+	// Extract recent thoughts as Thought pointers (buffer already contains pointers)
+	workingMem := make([]*Thought, 0, len(ac.workingMemory.buffer))
+	workingMem = append(workingMem, ac.workingMemory.buffer...)
 	
-	// Extract working memory content
-	workingMemContent := make([]string, 0)
-	for _, t := range ac.workingMemory.buffer {
-		workingMemContent = append(workingMemContent, fmt.Sprintf("[%s] %s", t.Type, t.Content))
-	}
-	
-	// Get current interests
+	// Get current interests as strings
 	ac.interests.mu.RLock()
-	interests := make(map[string]float64)
-	for k, v := range ac.interests.topics {
-		interests[k] = v
+	topInterests := make([]string, 0, len(ac.interests.topics))
+	for k := range ac.interests.topics {
+		topInterests = append(topInterests, k)
 	}
 	ac.interests.mu.RUnlock()
 	
 	return &ThoughtContext{
-		WorkingMemory:    workingMemContent,
-		RecentThoughts:   recentThoughts,
-		CurrentInterests: interests,
-		IdentityState: map[string]interface{}{
-			"coherence": ac.identity.Coherence,
-			"name":      ac.identity.Name,
-		},
+		Timestamp:         time.Now(),
+		WorkingMemory:     workingMem,
+		IdentityCoherence: ac.identity.Coherence,
+		EmotionalState:    *ac.identity.EmotionalState,
+		TopInterests:      topInterests,
+		CuriosityLevel:    0.5, // Default curiosity level
 	}
 }
 
